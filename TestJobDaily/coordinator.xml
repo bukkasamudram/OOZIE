@@ -1,0 +1,36 @@
+<coordinator-app name="test_app_daily" start="${start}" end="${end}" frequency="${coord:days(1)}" timezone="UTC" xmlns="uri:oozie:coordinator:0.1"> 
+<controls>
+	<timeout>${timeOut}</timeout>
+	<concurrency>${conCur}</concurrency>
+	<execution>${execOrder}</execution>
+<!--throttle>${throttle}</throttle-->
+</controls>
+
+
+<input-events>
+	<data-in name="inputInst1" dataset="input_event_trigger">
+		<instance>${coord:current(0)}</instance>
+	</data-in>
+</input-events>
+
+
+<action>
+	<workflow>
+		<app-path>${oozie_app_path}</app-path>
+		<configuration>
+			<property>                     
+				<name>processDate</name>
+				<value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd')}</value> 
+			</property>
+            <property>
+                <name>dt</name>
+                <value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd')}</value>
+            </property>
+            <property>
+            	<name>previousdt</name>
+            	<value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), -1, 'DAY'), "yyyy-MM-dd")}</value>
+            </property>
+		</configuration>
+	</workflow>
+</action>
+</coordinator-app>

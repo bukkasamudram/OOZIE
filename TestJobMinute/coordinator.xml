@@ -1,0 +1,42 @@
+<coordinator-app xmlns="uri:oozie:coordinator:0.3" name="${jobName}"
+	start="${start}" end="${end}" frequency="15" timezone="UTC">
+	<controls>
+		<timeout>${timeOut}</timeout>
+		<concurrency>${concurrency}</concurrency>
+		<execution>${execOrder}</execution>
+		<!--throttle>${throttle}</throttle -->
+	</controls>
+	<action>
+		<workflow>
+			<app-path>${workflowAppPath}</app-path>
+			<configuration>
+				<property>
+					<name>time</name>
+					<value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd-HH-mm')}
+					</value>
+				</property>
+				<property>
+					<name>dt</name>
+					<value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd')}
+					</value>
+				</property>
+				<property>
+				        <name>previousdt</name>
+					<value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), -1, 'DAY'), "yyyy-MM-dd")}</value>
+				</property>
+				<property>
+					<name>hour</name>
+					<value>${coord:formatTime(coord:nominalTime(), 'HH')}</value>
+				</property>
+				<property>
+					<name>minute</name>
+					<value>${coord:formatTime(coord:nominalTime(), 'mm')}</value>
+				</property>
+				<property>
+					<name>app_path</name>
+					<value>${workflowAppPath}</value>
+				</property>
+			</configuration>
+		</workflow>
+	</action>
+</coordinator-app>

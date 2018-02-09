@@ -1,0 +1,42 @@
+<coordinator-app name="test_app_hourly" start="${start}" end="${end}" frequency="${coord:hours(1)}" timezone="UTC" xmlns="uri:oozie:coordinator:0.3"> 
+    <controls>
+       <timeout>${timeOut}</timeout>
+       <concurrency>${conCur}</concurrency>
+       <concurrency>${conCur}</concurrency>
+       <execution>${execOrder}</execution>
+       <!--throttle>${throttle}</throttle-->
+    </controls>
+
+    <input-events>
+        <data-in name="inputInst" dataset="input">
+          <instance>${coord:current(0)}</instance>
+        </data-in>
+    </input-events>
+    <action>
+        <workflow>
+          <app-path>${oozie_app_path}</app-path>
+          <configuration>
+              <property>                     
+                   <name>dt</name>
+                   <value>${coord:formatTime(coord:nominalTime(), 'yyyy-MM-dd')}</value>
+              </property>
+              <property>
+              	<name>previousdt</name>
+              	<value>${coord:formatTime(coord:dateOffset(coord:nominalTime(), -1, 'DAY'), "yyyy-MM-dd")}</value>
+              </property>
+	      <property>
+		   <name>hr</name>
+		   <value>${coord:formatTime(coord:nominalTime(), 'HH')}</value>
+	      </property>
+	      <property>
+                   <name>timeStamp2</name>
+                   <value>${coord:formatTime(coord:nominalTime(), 'yyyy_MM_dd')}</value>
+              </property>
+              <property>
+                   <name>timeStamp3</name>
+                   <value>${coord:formatTime(coord:nominalTime(), 'yyyyMMdd')}</value>
+              </property>	
+          </configuration>
+        </workflow>
+     </action>
+</coordinator-app>

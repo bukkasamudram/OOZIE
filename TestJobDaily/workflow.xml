@@ -1,0 +1,37 @@
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="test-wf">
+	<start to="makedata"/>
+		<action name="makedata">
+			<hive xmlns="uri:oozie:hive-action:0.2">
+				<job-tracker>${jobTracker}</job-tracker>
+				<name-node>${nameNode}</name-node>
+				<job-xml>hive-site.xml</job-xml>
+				<configuration>
+				<property>
+				<name>mapred.job.queue.name</name>
+				<value>${queueName}</value>
+				</property>
+				<property>
+				<name>oozie.hive.defaults</name>
+				<value>hive-site.xml</value>
+				</property>
+				</configuration>
+				<script>makedata.q</script>
+				<param>DATE=${processDate}</param>
+				<param>YESTERDAY=${previousdt}</param>
+			</hive>
+			<ok to="done-trigger"/>
+			<error to="fail"/>
+		</action>
+		<action name="done-trigger">
+			<fs>
+				<mkdir path='${nameNode}/processed/trigger/${appName}/dt=${processDate}/_SUCCESS' />
+			</fs>
+		<ok to="end" />
+		<error to="fail"/>
+		</action>
+
+		<kill name="fail">
+			<message>Test job failed, error message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+		</kill>
+		<end name="end"/>
+</workflow-app>
